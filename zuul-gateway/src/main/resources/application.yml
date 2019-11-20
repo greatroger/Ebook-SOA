@@ -8,6 +8,9 @@ spring:
   application:
     name: product-service-zuul
 zuul:
+  host:
+    connect-timeout-millis: 1500000000 #HTTP连接超时要比Hystrix的大
+    socket-timeout-millis: 60000   #socket超时
   routes:
     api-category:
       path: /api-category/**
@@ -18,4 +21,7 @@ zuul:
     api-order:
       path: /api-order/**
       serviceId: client-orderService
+    api-inventory:
+      path: /api-inventory/**
+      serviceId: client-inventoryService
 

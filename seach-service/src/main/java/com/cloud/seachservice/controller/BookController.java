@@ -20,7 +20,7 @@ public class BookController {
     BookDAO bookDAO;
 
     @ApiOperation("获得系统中所有的书籍信息")
-    @GetMapping("/books")
+    @GetMapping("/v1/books")
     public List<BookInfo> listBook() throws Exception {
         List<BookInfo> cs=bookDAO.findAll();
         System.out.println("findAll");
@@ -28,14 +28,14 @@ public class BookController {
     }
 
     @ApiOperation("获得分类ID为categoryid的所有书籍信息")
-    @GetMapping("/bookcategory/{categoryid}")
+    @GetMapping("/v1/book-category/{categoryid}")
     public List<BookInfo> categoryBook(@PathVariable("categoryid") int categoryid) throws Exception{
         List<BookInfo> cs=bookDAO.findByCategoryid(categoryid);
         return cs;
     }
 
     @ApiOperation("根据用户输入的关键字，搜索书籍")
-    @GetMapping("/searchBook/{keyWord}")
+    @GetMapping("/v1/book-consultance/{keyWord}")
     public List<BookInfo> searchBook(@PathVariable("keyWord") String keyWord) throws Exception{
         List<BookInfo> cs1=bookDAO.findByNameLike(keyWord);
         List<BookInfo> cs2=bookDAO.findByAuthorLike(keyWord);
@@ -44,11 +44,10 @@ public class BookController {
     }
 
     @ApiOperation("获得书籍ID为id的书籍信息")
-    @GetMapping("/book/{id}")
+    @GetMapping("/v1/book/{id}")
     public BookInfo searchBookID(@PathVariable("id") Integer id) throws Exception{
         BookInfo b=bookDAO.getOne(id);
         return b;
     }
-
 
 }

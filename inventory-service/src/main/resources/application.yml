@@ -6,14 +6,19 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 spring:
   application:
-    name: client-orderService
+    name: client-inventoryService
+  jpa:
+    open-in-view: true
   datasource:
     username: root
     password: admin
-    url: jdbc:mysql://59.110.160.154:3306/orderService?characterEncoding=UTF-8
+    url: jdbc:mysql://59.110.160.154:3306/inventoryService?characterEncoding=UTF-8
     driver-class-name: com.mysql.jdbc.Driver
   activemq:
     broker-url: tcp://localhost:61616
     in-memory: true
     pool:
       enabled: false
+  jms:
+    template:
+      default-destination: shipping.queue

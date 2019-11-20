@@ -21,7 +21,7 @@ public class CategoryController {
     CategoryDAO categoryDAO;
 
     @ApiOperation("获得全部的书籍分类")
-    @GetMapping("/categories")  //获得系统中所有书籍的分类
+    @GetMapping("/v1/categories")  //获得系统中所有书籍的分类
     public List<Category> listCategory() throws Exception {
         List<Category> cs=categoryDAO.findAll();
         System.out.println("findAll");

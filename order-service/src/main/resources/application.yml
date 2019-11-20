@@ -17,3 +17,6 @@ spring:
     in-memory: true
     pool:
       enabled: false
+  jms:
+    template:
+      default-destination: mytest.queue
