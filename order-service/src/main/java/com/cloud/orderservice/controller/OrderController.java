@@ -48,23 +48,46 @@ public class OrderController {
         return true;
     }
 
-    @ApiOperation("用户 支付成功，意图在于把这条订单信息放入库存消息队列")
-    @PostMapping("/v1/order-payment")
-    public void payOrder(@RequestBody String bookid) throws Exception {
-        jmsTemplate.convertAndSend(bookid);
+    @ApiOperation("查看某一用户未支付的所有订单(相当于购物车的作用)")
+    @GetMapping("/v1/shoppingcart/{userid}/{status}")
+    public List<Order> getCart(@PathVariable("userid") int userid,@PathVariable("status") String status) throws Exception {
+        List<Order> cs=orderDAO.getCartByUser(userid,status);
+        return cs;
     }
+
+//    @ApiOperation("用户 支付成功，意图在于把这条订单信息放入库存消息队列")
+//    @PostMapping("/v1/order-payment")
+//    public void payOrder(@RequestBody String bookid) throws Exception {
+//        jmsTemplate.convertAndSend(bookid);
+//    }
+
+//    @ApiOperation("用户 支付成功，意图在于把这条订单信息放入库存消息队列")
+//    @PostMapping("/v2/order-payment")
+//    public void addToQueue(@RequestBody Order o)throws Exception {
+//        int bookid=o.getBookid();
+//        int orderid=o.getId();
+//        HashMap<String,String>orderInfo=new HashMap<String, String>();
+//        String orderid_s=String.valueOf(orderid);
+//        String bookid_s=String.valueOf(bookid);
+//        orderInfo.put(orderid_s,bookid_s);
+//        jmsTemplate.convertAndSend(orderInfo);
+//    }
 
     @ApiOperation("用户 支付成功，意图在于把这条订单信息放入库存消息队列")
     @PostMapping("/v2/order-payment")
     public void addToQueue(@RequestBody Order o)throws Exception {
         int bookid=o.getBookid();
         int orderid=o.getId();
+        int num=o.getNum();
         HashMap<String,String>orderInfo=new HashMap<String, String>();
         String orderid_s=String.valueOf(orderid);
         String bookid_s=String.valueOf(bookid);
-        orderInfo.put(orderid_s,bookid_s);
+        String num_s=String.valueOf(num);
+        String book_info=bookid_s+"+"+num_s;
+        orderInfo.put(orderid_s,book_info);
         jmsTemplate.convertAndSend(orderInfo);
     }
+
 
     @ApiOperation("用户 支付成功，把某一个订单的状态从 unpaid 更改为 paid")
     @PutMapping("/v1/paid-order/{id}")
@@ -75,14 +98,14 @@ public class OrderController {
         System.out.println(c.getId()+c.getStatus());
     }
 
-    @ApiOperation("用户 未支付时取消订单 或 库存缺货经管理员决定给用户推单 时调用")
+    @ApiOperation("用户 未支付时取消订单 或 库存缺货经管理员决定给用户退订单 时调用")
     @DeleteMapping("/v1/order-deletion/{id}")
     public void deleteOrder(@PathVariable("id") Integer id) throws Exception {
         Order o=orderDAO.getOne(id);
         orderDAO.delete(o);
     }
 
-    @ApiOperation("把订单的状态更改为 shipping")
+    @ApiOperation("把订单的状态更改为 shipping（供后端使用）")
     @PutMapping("/v1/order-shipping/{id}")
     public void shipOrder(@PathVariable("id") Integer id) throws Exception {
         Order o=orderDAO.getOne(id);

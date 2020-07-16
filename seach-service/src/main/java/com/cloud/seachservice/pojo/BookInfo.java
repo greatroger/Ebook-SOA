@@ -1,6 +1,7 @@
 package com.cloud.seachservice.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
 @Table(name = "book_")
+@Proxy(lazy = false)
 public class BookInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +43,9 @@ public class BookInfo {
     @Column(name = "categoryid")
     private int categoryid;
 
+    @Column(name="doubanscore")
+    private String doubanscore;
+
     public int getId() {
         return id;
     }
@@ -65,7 +70,7 @@ public class BookInfo {
         return categoryid;
     }
 
-        public String getPrice() {
+    public String getPrice() {
         return price;
     }
 
@@ -76,6 +81,12 @@ public class BookInfo {
     public String getTranslator() {
         return translator;
     }
+
+    public String getDoubanscore() {
+        return doubanscore;
+    }
+
+
 
     public void setId(int id) {
         this.id = id;
@@ -111,5 +122,9 @@ public class BookInfo {
 
     public void setTranslator(String translator) {
         this.translator = translator;
+    }
+
+    public void setDoubanscore(String doubanscore) {
+        this.doubanscore = doubanscore;
     }
 }

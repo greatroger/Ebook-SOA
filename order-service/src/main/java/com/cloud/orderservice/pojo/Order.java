@@ -24,6 +24,9 @@ public class Order implements Serializable {
     @Column(name = "bookid")
     private int bookid;
 
+    @Column(name = "num")
+    private int num;
+
     @Column(name = "status")
     private String status;
 
@@ -43,6 +46,10 @@ public class Order implements Serializable {
         this.status = status;
     }
 
+    public void setNum(int num) {
+        this.num = num;
+    }
+
     public int getId() {
         return id;
     }
@@ -57,5 +64,9 @@ public class Order implements Serializable {
 
     public String getStatus() {
         return status;
+    }
+
+    public int getNum() {
+        return num;
     }
 }

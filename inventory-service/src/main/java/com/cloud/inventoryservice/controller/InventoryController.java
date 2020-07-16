@@ -29,28 +29,37 @@ public class InventoryController {
     private RestTemplate template;
 
 //    @JmsListener(destination = "mytest.queue")
-//    public void pollOrder(String bookid){
-//        Integer i=Integer.valueOf(bookid);
-//        Inventory inventory=inventoryDAO.getOne(i);
+//    public void pullOrder(HashMap<String,String> map){
+//        String orderid_s = null;
+//        String bookid_s=null;
+//        Set<String> key = map.keySet();
+//        for (String string : key) {
+//            orderid_s=string;  //取出键
+//            break;
+//        }
+//        Collection<String> connection = map.values();
+//        Iterator<String> iterator = connection.iterator();
+//        while (iterator.hasNext()) {
+//            bookid_s=iterator.next();
+//            break;
+//        }
+//        System.out.println(orderid_s + "  "+bookid_s);
+//        Integer bookid=Integer.valueOf(bookid_s);
+//        Inventory inventory=inventoryDAO.getOne(bookid);
+//        Integer orderid=Integer.valueOf(orderid_s);
 //        System.out.println("查找到书籍："+inventory.getBookid());
 //        if (inventory.getStock()>0){
 //            int stockNum=inventory.getStock();
 //            inventory.setStock(stockNum-1);
 //            inventoryDAO.save(inventory);
-//        }
-//        else{ //向管理员发消息，可用API轮询或webSocket实现
-//            try {
-//                lackBook(i);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+//            template.put("http://127.0.0.1:8083/v1/order-shipping/"+orderid,null);
 //        }
 //    }
 
     @JmsListener(destination = "mytest.queue")
     public void pullOrder(HashMap<String,String> map){
         String orderid_s = null;
-        String bookid_s=null;
+        String bookid_info=null;
         Set<String> key = map.keySet();
         for (String string : key) {
             orderid_s=string;  //取出键
@@ -59,26 +68,31 @@ public class InventoryController {
         Collection<String> connection = map.values();
         Iterator<String> iterator = connection.iterator();
         while (iterator.hasNext()) {
-            bookid_s=iterator.next();
+            bookid_info=iterator.next();
             break;
         }
-        System.out.println(orderid_s + "  "+bookid_s);
-        Integer bookid=Integer.valueOf(bookid_s);
+        int count=0;
+        for(int i=0;i<bookid_info.length();i++){
+            char ch = bookid_info.charAt(i);
+            count++;
+            if (ch=='+'){
+                break;
+            }
+        }
+        String book_id=bookid_info.substring(0,count-1);
+        System.out.println("书籍ID:"+book_id);
+        String book_num=bookid_info.substring(count,bookid_info.length());
+        System.out.println("书籍数量:"+book_num);
+        Integer bookid=Integer.valueOf(book_id);
+        Integer booknum=Integer.valueOf(book_num);
         Inventory inventory=inventoryDAO.getOne(bookid);
         Integer orderid=Integer.valueOf(orderid_s);
-        System.out.println("查找到书籍："+inventory.getBookid());
-        if (inventory.getStock()>0){
+        if (inventory.getStock()>booknum){
             int stockNum=inventory.getStock();
-            inventory.setStock(stockNum-1);
+            inventory.setStock(stockNum-booknum);
             inventoryDAO.save(inventory);
             template.put("http://127.0.0.1:8083/v1/order-shipping/"+orderid,null);
         }
-    }
-
-    @ApiOperation("给管理员发送缺书提示，需轮询调用")
-    @GetMapping("/lackBook")
-    public String lackBook (Integer bookid) throws Exception {
-        return "缺少书籍ID为"+bookid+"的书籍，请补充";
     }
 
     @ApiOperation("获取全部库存信息")
@@ -86,6 +100,13 @@ public class InventoryController {
     public List<Inventory> listInventory() throws Exception {
         List<Inventory> cs=inventoryDAO.findAll();
         System.out.println("findAll");
+        return cs;
+    }
+
+    @ApiOperation("获取缺货信息")
+    @GetMapping("/lack-book")
+    public List<Inventory> lackBook() throws Exception {
+        List<Inventory> cs=inventoryDAO.lackWarn();
         return cs;
     }
 

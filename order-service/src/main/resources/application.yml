@@ -3,7 +3,12 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      #defaultZone: http://59.110.160.154:8761/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/
+#  instance:
+#    prefer-ip-address: true
+#    ip-address: 212.64.93.247
+#    non-secure-port: 8083
 spring:
   application:
     name: client-orderService
@@ -13,7 +18,8 @@ spring:
     url: jdbc:mysql://59.110.160.154:3306/orderService?characterEncoding=UTF-8
     driver-class-name: com.mysql.jdbc.Driver
   activemq:
-    broker-url: tcp://localhost:61616
+    #broker-url: tcp://59.110.160.154:61616
+    broker-url: tcp://127.0.0.1:61616
     in-memory: true
     pool:
       enabled: false
