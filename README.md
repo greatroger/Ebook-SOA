@@ -13,6 +13,46 @@
 - Zuul
 - Hystrix
 - Swagger
-- Vue
 
 ## 架构设计
+```
+├── mvnw
+├── mvnw.cmd
+├── pom.xml                                         : maven 全局配置文件
+├── 各个服务(category-service等)
+|    └── src
+|        ├── main
+|        │   ├── java
+|        │   │   └── com.cloud
+|        │   │       ├── 。。。ServiceApplication.java     启动类
+|        │   │       ├── config                          [Config]
+|        |   |       │                                   : 配置类库
+|        │   │       ├── controller                      [Controller] 
+|        |   |       │                                   : 前端控制层
+|        │   │       ├── domain/pojo                     [Domain]
+|        |   |       │                                   : 实体类 : 
+|        │   │       ├── dao                             [Dao]
+|        |   |       │                                   : 数据接口访问层 
+|        │   │       ├── util                            [Utilities]
+|        |   |       │                                   : 工具类库
+|       封装客户端请求，防止数据泄露，保证数据安全，不破坏实体类结构
+|        │   └── resources
+|        │       ├── application.yml                     : 服务配置文件
+|        └── test 
+|            └── java
+|                └── com.cloud
+|                    └── 。。。ServiceApplicationTests.java      : 单元测试目录
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com.cloud
+    │   │       ├── CloudDiscoveryApplication.java    启动类
+    │   └── resources
+    │       ├── application.yml                     : 项目配置文件
+    └── test 
+        └── java
+            └── com.cloud                            : 单元测试目录
+```
+
+## 说明
+本项目涉及多个服务器，成本较大，因此在项目结束后，就停止了部署。因此提供了本项目正常运行时的视频，分别是```/video目录下的在线书城.mp4 和后台管理video.mp4。 ```
